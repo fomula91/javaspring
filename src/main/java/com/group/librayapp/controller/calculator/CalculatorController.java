@@ -3,6 +3,7 @@ package com.group.librayapp.controller.calculator;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.group.librayapp.dto.calculator.CalculatorAddRequest;
+import com.group.librayapp.dto.calculator.CalculatorAllSum;
 import com.group.librayapp.dto.calculator.CalculatorMultiplyReqeust;
 import com.group.librayapp.dto.date.DateRequest;
 
@@ -48,6 +49,17 @@ public class CalculatorController {
 
         return result;
     }
+
+    
+    @PostMapping("/postnumbers")
+    public Integer postCalculatorNumbers(@RequestBody CalculatorAllSum reqeust) {
+        Integer Result = 0;
+        for(int i = 0; i < reqeust.getNumbers().size(); i++) {
+            Result = Result + reqeust.getNumbers().get(i);
+        }
+        return Result;
+    }
+    
     
     
 }
