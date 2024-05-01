@@ -4,13 +4,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.group.librayapp.dto.calculator.CalculatorAddRequest;
 import com.group.librayapp.dto.calculator.CalculatorMultiplyReqeust;
+import com.group.librayapp.dto.date.DateRequest;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 
 @RestController
@@ -34,5 +38,16 @@ public class CalculatorController {
 
         return result;
     }
+
+    @GetMapping("/api/v1/day-of-week")
+    public Map<String, Object> getDayofweek(DateRequest request) {
+        LocalDate date = LocalDate.parse(request.getDate());
+        String currentDate = date.getDayOfWeek().toString().substring(0,3).toUpperCase();
+        Map<String, Object> result = new HashMap<>();
+        result.put("dayOfTheWeek", currentDate);
+
+        return result;
+    }
+    
     
 }
