@@ -57,6 +57,13 @@ public class UserController {
 
     @PutMapping("/user")
     public void updateUser(@RequestBody UserUpdateRequest request) {
+        String readSql = "SELECT * FROM user WHERE id = ?";
+        Boolean isUserNotExist =  jdbcTemplate.query(readSql, (rs, rowNum) -> 0, request.getId()).isEmpty();
+
+        if(isUserNotExist) {
+            throw new IllegalArgumentException();
+        }
+
         String sql = "UPDATE user SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql, request.getName(), request.getId());
         
@@ -64,6 +71,13 @@ public class UserController {
 
     @DeleteMapping("/user")
     public void deleteUser(@RequestParam String name) {
+        String readSql = "SELECT * FROM user WHERE name = ?";
+        Boolean isUserNotExist =  jdbcTemplate.query(readSql, (rs, rowNum) -> 0, name).isEmpty();
+
+        if(isUserNotExist) {
+            throw new IllegalArgumentException();
+        }
+
         String sql = "DELETE FROM user WHERE name = ?";
         jdbcTemplate.update(sql, name);
     }
