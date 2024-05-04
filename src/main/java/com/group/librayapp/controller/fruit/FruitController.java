@@ -80,7 +80,7 @@ public class FruitController {
     }
 
     @GetMapping("/api/v1/fruit/stat")
-    public List<FruitResponse> getMethodName() {
+    public List<FruitResponse> getFruitStatus() {
         String sql = "SELECT SUM(CASE WHEN is_sold = 1 THEN price ELSE 0 END) AS seles_amount, SUM(CASE WHEN is_sold = 0 OR is_sold IS NULL THEN price ELSE 0 END) AS not_sales_amount FROM fruit";
 
         return jdbcTemplate.query(sql, new RowMapper<FruitResponse>() {
