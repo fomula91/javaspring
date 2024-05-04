@@ -4,6 +4,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.group.librayapp.dto.fruit.request.CereateFruitReqeust;
 import com.group.librayapp.dto.fruit.request.UpdateFruitRequest;
+import com.group.librayapp.dto.fruit.response.FruitResponse;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 // import org.slf4j.Logger;
 // import org.slf4j.LoggerFactory;
@@ -11,12 +16,16 @@ import com.group.librayapp.dto.fruit.request.UpdateFruitRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 public class FruitController {
@@ -69,5 +78,21 @@ public class FruitController {
     public ResponseEntity<String> handleFruitNotFoundException(FruitNotFonudException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
+
+    @GetMapping("/api/v1/fruit/stat")
+    public List<FruitResponse> getMethodName() {
+        String sql = "SELECT SUM(CASE WHEN is_sold = 1 THEN price ELSE 0 END) AS seles_amount, SUM(CASE WHEN is_sold = 0 OR is_sold IS NULL THEN price ELSE 0 END) AS not_sales_amount FROM fruit";
+
+        return jdbcTemplate.query(sql, new RowMapper<FruitResponse>() {
+            @Override
+            public FruitResponse mapRow(ResultSet rs, int rowNum) throws SQLException{ 
+                long selesAmount = rs.getLong("seles_amount");
+                long notSalesAmount = rs.getLong("not_sales_amount");
+                return new FruitResponse(selesAmount, notSalesAmount);
+            }
+        });
+        
+    }
+    
 }
 
